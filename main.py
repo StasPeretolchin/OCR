@@ -26,7 +26,7 @@ def main():
     while True:
         timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_")
         for file in os.scandir(EXCEL_DIR):
-            file_name, file_ext = os.path.splitext(file.name)[0], os.path.splitext(file.name)[1]
+            file_name, file_ext = os.path.splitext(file.name)[0], os.path.splitext(file.name)[1].lower()
             print(file_name, file_ext)
             time.sleep(3)
 
