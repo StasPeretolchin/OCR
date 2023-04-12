@@ -9,7 +9,7 @@ WORD_DIR = PATH_TO_DIR + 'Word/'
 OUTPUT_DIR = PATH_TO_DIR + 'YourFiles/'
 TRASH_DIR = PATH_TO_DIR + 'Корзина/'
 ABBYY_PATH = 'C:/Program Files (x86)/ABBYY FineReader 15/FineCmd.exe'
-TYPE_LIST = ['pdf', 'jpg', 'jpeg', 'bmp', 'png', 'gif', 'djvu', 'djv']
+TYPE_LIST = ['.pdf', '.jpg', '.jpeg', '.bmp', '.png', '.gif', '.djvu', '.djv']
 
 
 def move_file(initial_path, final_path):
@@ -25,12 +25,13 @@ def move_file(initial_path, final_path):
 def main():
     while True:
         timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_")
+
         for file in os.scandir(EXCEL_DIR):
             file_name, file_ext = os.path.splitext(file.name)[0], os.path.splitext(file.name)[1].lower()
             print(file_name, file_ext)
             time.sleep(3)
 
-            if file_ext.replace('.', '') not in TYPE_LIST:
+            if file_ext not in TYPE_LIST:
                 print('файл не в списке разрешенных расширений')
             else:
                 print('Запускаем распознавание!')
@@ -41,6 +42,23 @@ def main():
                 print("`FineCmd.exe ~` run with exit code %d" % exit_code)
 
             move_file(EXCEL_DIR + file.name, TRASH_DIR + timestamp + file.name)
+
+        for file in os.scandir(WORD_DIR):
+            file_name, file_ext = os.path.splitext(file.name)[0], os.path.splitext(file.name)[1].lower()
+            print(file_name, file_ext)
+            time.sleep(3)
+
+            if file_ext not in TYPE_LIST:
+                print('файл не в списке разрешенных расширений')
+            else:
+                print('Запускаем распознавание!')
+                cmd = fr'chcp 1251 & "{ABBYY_PATH}" "{WORD_DIR}{file.name}" /lang English Russian ' \
+                      fr'/out "{OUTPUT_DIR}{timestamp}{file.name}.docx"'
+                print(cmd)
+                exit_code = os.system(cmd)
+                print("`FineCmd.exe ~` run with exit code %d" % exit_code)
+
+            move_file(WORD_DIR + file.name, TRASH_DIR + timestamp + file.name)
 
 
 if __name__ == "__main__":
